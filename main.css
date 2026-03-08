@@ -1,0 +1,217 @@
+/* Main Page Background */
+.main-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(149deg, rgb(56, 51, 46) 7.7%, rgb(0, 0, 0) 41.5%, rgb(26, 26, 26) 92.3%);
+  z-index: 0;
+}
+
+.main-bg-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 10%, rgba(118, 100, 75, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(182, 136, 116, 0.05) 0%, transparent 50%);
+  z-index: 1;
+}
+
+/* Welcome Header */
+.welcome-header {
+  padding-top: 8px;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.welcome-date {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.welcome-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.welcome-title {
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  line-height: 39px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.chevron-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 40px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.chevron-btn img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.welcome-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.meta-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1) opacity(0.6);
+}
+
+/* Exercise List */
+.exercise-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.exercise-list::-webkit-scrollbar {
+  display: none;
+}
+
+.exercise-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 16px;
+  height: 100px;
+  background: none;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.exercise-card:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.98);
+}
+
+.exercise-thumb {
+  width: 128px;
+  height: 100px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.exercise-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.exercise-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.exercise-name {
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  line-height: 22px;
+}
+
+.exercise-detail {
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 18px;
+}
+
+.exercise-check {
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exercise-check img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1) opacity(0.5);
+}
+
+/* Start Button */
+.start-section {
+  padding: 0 0 40px;
+}
+
+.start-btn {
+  width: 100%;
+  padding: 32px 36px;
+  background: white;
+  border: none;
+  border-radius: 1000px;
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
+  letter-spacing: -0.43px;
+  line-height: 22px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+
+.start-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}

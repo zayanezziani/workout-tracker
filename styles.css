@@ -1,0 +1,280 @@
+/* Reset & Base */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #1a1a1a;
+  font-family: -apple-system, 'SF Pro', 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+}
+
+/* Phone Frame */
+.phone-frame {
+  position: relative;
+  width: 402px;
+  height: 874px;
+  background: #000;
+  overflow: hidden;
+  border-radius: 48px;
+}
+
+/* Background Image */
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: -40px;
+  width: 482px;
+  height: 874px;
+}
+
+.bg-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Gradient Overlays */
+.overlay-bottom {
+  position: absolute;
+  left: -136px;
+  top: 506px;
+  width: 674px;
+  height: 368px;
+  background: rgba(0, 0, 0, 0.6);
+  filter: blur(27px);
+}
+
+.overlay-top {
+  position: absolute;
+  left: -136px;
+  top: -100px;
+  width: 674px;
+  height: 274px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.64) 55.83%, rgba(102, 102, 102, 0) 157.82%);
+  filter: blur(27px);
+}
+
+/* Status Bar */
+.status-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 21px 24px 19px;
+  z-index: 10;
+}
+
+.time {
+  font-size: 17px;
+  font-weight: 600;
+  color: white;
+  line-height: 22px;
+  letter-spacing: 0;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.status-icon {
+  display: block;
+}
+
+.status-icon.cellular {
+  width: 19px;
+  height: 12px;
+}
+
+.status-icon.wifi {
+  width: 17px;
+  height: 12px;
+}
+
+.status-icon.battery {
+  width: 27px;
+  height: 13px;
+}
+
+/* Content */
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 62px);
+  padding: 0 16px;
+  z-index: 10;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.icon-btn img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 500;
+  color: white;
+  text-align: center;
+  line-height: 22px;
+}
+
+/* Spacer */
+.spacer {
+  flex: 1;
+}
+
+/* Reps Section */
+.reps-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.reps-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 40px;
+}
+
+.reps-number {
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+}
+
+.reps-label {
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 40px;
+}
+
+/* Set Selector */
+.set-selector {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.set-pill {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.set-pill--active {
+  background: white;
+  border-radius: 38px;
+}
+
+.set-pill--inactive {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: white;
+}
+
+/* Bottom Actions */
+.bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 56px 0 40px;
+}
+
+.action-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 40px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.action-btn--glass {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.action-btn img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.next-set-btn {
+  flex: 1;
+  height: 86px;
+  background: white;
+  border: none;
+  border-radius: 1000px;
+  font-family: -apple-system, 'SF Pro Rounded', 'SF Pro', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
+  letter-spacing: -0.43px;
+  line-height: 22px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+
+.next-set-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* Responsive - ensure it looks good on smaller screens */
+@media (max-height: 900px) {
+  .phone-frame {
+    border-radius: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: 402px;
+  }
+}
