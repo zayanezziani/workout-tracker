@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Figma__get_design_context",
+      "mcp__claude_ai_Figma__get_metadata",
+      "mcp__claude_ai_Figma__use_figma",
+      "Bash(not exist *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git -C \"C:/Users/Ultrqpc/.claude/projects/workout-tracker\" log --oneline -5)",
+      "Bash(gh --version)",
+      "Bash(gh auth *)",
+      "PowerShell(gh --version)",
+      "PowerShell(gh auth status)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(git add *)"
+    ]
+  }
+}
