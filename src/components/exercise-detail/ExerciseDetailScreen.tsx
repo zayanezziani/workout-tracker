@@ -40,7 +40,7 @@ export function ExerciseDetailScreen({ exercise, onBack }: Props) {
         src={exercise.image.replace(/\/\d+\/\d+$/, '/482/874')}
         alt={exercise.name}
         transition={springs.smooth}
-        className="absolute left-[-40px] top-0 h-[874px] w-[482px] object-cover"
+        className="absolute inset-0 h-full w-full object-cover"
       />
 
       <div className="pointer-events-none absolute -left-[136px] top-[-100px] h-[274px] w-[674px] bg-[linear-gradient(to_bottom,rgba(0,0,0,0.64)_55.83%,rgba(102,102,102,0)_157.82%)] [filter:blur(27px)]" />
