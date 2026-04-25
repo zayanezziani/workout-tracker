@@ -2,21 +2,16 @@ import { motion } from 'framer-motion'
 import { WEEK_DAYS, type Day } from '../../data/days'
 import { ease } from '../../lib/motion'
 import { DayChip } from './DayChip'
-import { NextButton } from './NextButton'
 
 type Props = {
   selectedDays: Day[]
   onToggleDay: (day: Day) => void
-  onNext: () => void
 }
 
 export function ScheduleSetupScreen({
   selectedDays,
   onToggleDay,
-  onNext,
 }: Props) {
-  const canProceed = selectedDays.length > 0
-
   return (
     <motion.div
       key="onboarding-days"
@@ -24,10 +19,10 @@ export function ScheduleSetupScreen({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -24 }}
       transition={{ duration: 0.5, ease: ease.out }}
-      className="absolute inset-0 bg-[#161410]"
+      className="absolute inset-0"
     >
       <div className="relative z-10 flex h-full flex-col pt-[62px]">
-        <div className="flex flex-1 flex-col justify-end px-4 pb-14">
+        <div className="flex flex-1 flex-col justify-end px-4 pb-[166px]">
           <motion.div
             variants={{
               hidden: { opacity: 0 },
@@ -74,10 +69,6 @@ export function ScheduleSetupScreen({
               ))}
             </motion.div>
           </motion.div>
-        </div>
-
-        <div className="px-4 pb-10">
-          <NextButton enabled={canProceed} onClick={onNext} />
         </div>
       </div>
     </motion.div>

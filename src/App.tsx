@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { PhoneFrame } from './components/PhoneFrame'
-import { ScheduleSetupScreen } from './components/onboarding/ScheduleSetupScreen'
-import { PlanSetupScreen } from './components/onboarding/PlanSetupScreen'
+import { OnboardingFlow } from './components/onboarding/OnboardingFlow'
 import { WorkoutListScreen } from './components/workout-list/WorkoutListScreen'
 import { ExerciseDetailScreen } from './components/exercise-detail/ExerciseDetailScreen'
 import { todaysWorkout, type Exercise } from './data/workouts'
@@ -39,20 +38,15 @@ export default function App() {
   return (
     <PhoneFrame>
       <AnimatePresence mode="wait">
-        {screen === 'onboarding-days' && (
-          <ScheduleSetupScreen
-            key="onboarding-days"
+        {(screen === 'onboarding-days' || screen === 'onboarding-plan') && (
+          <OnboardingFlow
+            key="onboarding"
+            step={screen === 'onboarding-days' ? 'days' : 'plan'}
             selectedDays={selectedDays}
             onToggleDay={toggleDay}
-            onNext={() => setScreen('onboarding-plan')}
-          />
-        )}
-        {screen === 'onboarding-plan' && (
-          <PlanSetupScreen
-            key="onboarding-plan"
-            selectedDays={selectedDays}
             onBack={() => setScreen('onboarding-days')}
-            onNext={() => setScreen('workout-list')}
+            onNextSchedule={() => setScreen('onboarding-plan')}
+            onNextPlan={() => setScreen('workout-list')}
           />
         )}
         {screen === 'workout-list' && (

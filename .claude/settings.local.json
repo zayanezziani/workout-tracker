@@ -13,7 +13,18 @@
       "PowerShell(gh auth status)",
       "Bash(npm install *)",
       "Bash(npm run *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npx gh-pages *)",
+      "Bash(git ls-remote *)",
+      "mcp__3a8ff49f-d75d-41a3-ad77-1ea128509f3a__get_metadata",
+      "mcp__3a8ff49f-d75d-41a3-ad77-1ea128509f3a__use_figma",
+      "mcp__3a8ff49f-d75d-41a3-ad77-1ea128509f3a__get_screenshot",
+      "Bash(curl -s -o /tmp/figma_sheet.png \"https://www.figma.com/api/mcp/asset/0b9e32d2-c065-4170-9be7-d0c7e086be8d\")",
+      "Bash(curl -s -o \"C:/Users/Ultrqpc/AppData/Local/Temp/figma_sheet.png\" \"https://www.figma.com/api/mcp/asset/0b9e32d2-c065-4170-9be7-d0c7e086be8d\")",
+      "Bash(npx tsc *)",
+      "mcp__3a8ff49f-d75d-41a3-ad77-1ea128509f3a__get_design_context"
     ]
   }
 }

@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
-import { Search } from 'lucide-react'
+import { Check, Search, X } from 'lucide-react'
 import {
   EXERCISE_CATEGORIES,
   EXERCISE_LIBRARY,
@@ -14,15 +14,47 @@ import { ExerciseLibraryRow } from './ExerciseLibraryRow'
 type Props = {
   open: boolean
   day: string | null
+  initialSelected?: LibraryExercise[]
   onClose: () => void
-  onAdd: (exercise: LibraryExercise) => void
+  onConfirm: (exercises: LibraryExercise[]) => void
 }
 
-export function AddActivitySheet({ open, day, onClose, onAdd }: Props) {
+export function AddActivitySheet({
+  open,
+  day,
+  initialSelected = [],
+  onClose,
+  onConfirm,
+}: Props) {
   const [category, setCategory] = useState<ExerciseCategory>('All')
   const [query, setQuery] = useState('')
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
   const scrollRef = useRef<HTMLDivElement>(null)
   const { scrollY } = useScroll({ container: scrollRef })
+
+  useEffect(() => {
+    if (open) {
+      setSelectedIds(new Set(initialSelected.map((e) => e.id)))
+      setQuery('')
+      setCategory('All')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
+
+  const toggleSelected = (exercise: LibraryExercise) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(exercise.id)) next.delete(exercise.id)
+      else next.add(exercise.id)
+      return next
+    })
+  }
+
+  const handleConfirm = () => {
+    const picked = EXERCISE_LIBRARY.filter((e) => selectedIds.has(e.id))
+    onConfirm(picked)
+    onClose()
+  }
 
   const largeTitleOpacity = useTransform(scrollY, [16, 44], [1, 0])
 
@@ -98,7 +130,8 @@ export function AddActivitySheet({ open, day, onClose, onAdd }: Props) {
                   <ExerciseLibraryRow
                     key={exercise.id}
                     exercise={exercise}
-                    onAdd={onAdd}
+                    selected={selectedIds.has(exercise.id)}
+                    onToggle={toggleSelected}
                   />
                 ))}
                 {filtered.length === 0 && (
@@ -171,41 +204,46 @@ export function AddActivitySheet({ open, day, onClose, onAdd }: Props) {
               </motion.div>
             </div>
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[180px]">
+            <motion.button
+              type="button"
+              onClick={onClose}
+              whileTap={{ scale: 0.88 }}
+              transition={springs.tap}
+              aria-label="Close"
+              className="pointer-events-auto absolute left-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.16]"
+            >
+              <X size={20} strokeWidth={2.2} className="text-white" />
+            </motion.button>
+
+            <AnimatePresence>
+              {selectedIds.size > 0 && (
+                <motion.button
+                  key="confirm"
+                  type="button"
+                  onClick={handleConfirm}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.5, opacity: 0 }}
+                  whileTap={{ scale: 0.88 }}
+                  transition={springs.bouncy}
+                  aria-label={`Add ${selectedIds.size} exercise${
+                    selectedIds.size === 1 ? '' : 's'
+                  }`}
+                  className="pointer-events-auto absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-white"
+                >
+                  <Check size={20} strokeWidth={2.6} className="text-[#1f1c18]" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[120px]">
               <div
-                className="absolute inset-0 backdrop-blur-[2px]"
+                className="absolute inset-0 backdrop-blur-[24px]"
                 style={{
                   maskImage:
-                    'linear-gradient(to top, black 80%, transparent 100%)',
+                    'linear-gradient(to top, black 0%, transparent 100%)',
                   WebkitMaskImage:
-                    'linear-gradient(to top, black 80%, transparent 100%)',
-                }}
-              />
-              <div
-                className="absolute inset-0 backdrop-blur-[6px]"
-                style={{
-                  maskImage:
-                    'linear-gradient(to top, black 55%, transparent 95%)',
-                  WebkitMaskImage:
-                    'linear-gradient(to top, black 55%, transparent 95%)',
-                }}
-              />
-              <div
-                className="absolute inset-0 backdrop-blur-[14px]"
-                style={{
-                  maskImage:
-                    'linear-gradient(to top, black 30%, transparent 80%)',
-                  WebkitMaskImage:
-                    'linear-gradient(to top, black 30%, transparent 80%)',
-                }}
-              />
-              <div
-                className="absolute inset-0 backdrop-blur-[28px]"
-                style={{
-                  maskImage:
-                    'linear-gradient(to top, black 0%, transparent 60%)',
-                  WebkitMaskImage:
-                    'linear-gradient(to top, black 0%, transparent 60%)',
+                    'linear-gradient(to top, black 0%, transparent 100%)',
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent" />

@@ -2,19 +2,35 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeft } from 'lucide-react'
 import type { Day } from '../../data/days'
+import type { LibraryExercise } from '../../data/exercises'
 import { ease, springs } from '../../lib/motion'
 import { DayPlanCard } from './DayPlanCard'
-import { NextButton } from './NextButton'
 import { AddActivitySheet } from './AddActivitySheet'
 
 type Props = {
   selectedDays: Day[]
   onBack: () => void
-  onNext: () => void
 }
 
-export function PlanSetupScreen({ selectedDays, onBack, onNext }: Props) {
+export function PlanSetupScreen({ selectedDays, onBack }: Props) {
   const [activeDay, setActiveDay] = useState<Day | null>(null)
+  const [planByDay, setPlanByDay] = useState<Record<string, LibraryExercise[]>>(
+    {},
+  )
+  const [expandedDay, setExpandedDay] = useState<Day | null>(null)
+
+  const setExercisesForDay = (day: Day, exercises: LibraryExercise[]) => {
+    setPlanByDay((prev) => ({ ...prev, [day]: exercises }))
+    if (exercises.length > 0) {
+      setExpandedDay(day)
+    } else if (expandedDay === day) {
+      setExpandedDay(null)
+    }
+  }
+
+  const toggleExpanded = (day: Day) => {
+    setExpandedDay((prev) => (prev === day ? null : day))
+  }
 
   return (
     <motion.div
@@ -23,7 +39,7 @@ export function PlanSetupScreen({ selectedDays, onBack, onNext }: Props) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -24 }}
       transition={{ duration: 0.5, ease: ease.out }}
-      className="absolute inset-0 overflow-hidden bg-[#161410]"
+      className="absolute inset-0 overflow-hidden"
     >
       <div className="relative z-10 flex h-full flex-col pt-[62px]">
         <div className="flex items-center px-4">
@@ -39,7 +55,7 @@ export function PlanSetupScreen({ selectedDays, onBack, onNext }: Props) {
           </motion.button>
         </div>
 
-        <div className="flex flex-1 flex-col justify-end px-4 pb-14">
+        <div className="flex flex-1 flex-col overflow-y-auto px-4 pb-[160px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <motion.div
             variants={{
               hidden: { opacity: 0 },
@@ -50,7 +66,7 @@ export function PlanSetupScreen({ selectedDays, onBack, onNext }: Props) {
             }}
             initial="hidden"
             animate="show"
-            className="flex flex-col gap-10"
+            className="mt-auto flex flex-col gap-10"
           >
             <motion.h1
               variants={{
@@ -80,23 +96,26 @@ export function PlanSetupScreen({ selectedDays, onBack, onNext }: Props) {
                 <DayPlanCard
                   key={day}
                   day={day}
+                  exercises={planByDay[day] ?? []}
+                  expanded={expandedDay === day}
                   onAddActivity={() => setActiveDay(day)}
+                  onEditActivity={() => setActiveDay(day)}
+                  onToggleExpanded={() => toggleExpanded(day)}
                 />
               ))}
             </motion.div>
           </motion.div>
-        </div>
-
-        <div className="px-4 pb-10">
-          <NextButton enabled onClick={onNext} />
         </div>
       </div>
 
       <AddActivitySheet
         open={activeDay !== null}
         day={activeDay}
+        initialSelected={activeDay ? planByDay[activeDay] ?? [] : []}
         onClose={() => setActiveDay(null)}
-        onAdd={() => setActiveDay(null)}
+        onConfirm={(exercises) => {
+          if (activeDay) setExercisesForDay(activeDay, exercises)
+        }}
       />
     </motion.div>
   )
