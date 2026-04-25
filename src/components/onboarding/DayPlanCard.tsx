@@ -105,7 +105,16 @@ export function DayPlanCard({
                   }}
                   className="flex items-center gap-4"
                 >
-                  <div className="h-[60px] w-[60px] shrink-0 rounded-[18px] bg-white/[0.12]" />
+                  {exercise.image ? (
+                    <motion.img
+                      layoutId={`plan-exercise-image-${day}-${exercise.id}`}
+                      src={exercise.image}
+                      alt=""
+                      className="h-[60px] w-[60px] shrink-0 rounded-[18px] object-cover"
+                    />
+                  ) : (
+                    <div className="h-[60px] w-[60px] shrink-0 rounded-[18px] bg-white/[0.12]" />
+                  )}
                   <span className="font-sf text-[16px] font-semibold leading-[22px] text-white/[0.96]">
                     {exercise.name}
                   </span>

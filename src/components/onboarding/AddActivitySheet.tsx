@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion'
 import { Check, Search, X } from 'lucide-react'
 import {
   EXERCISE_CATEGORIES,
@@ -30,6 +36,7 @@ export function AddActivitySheet({
   const [query, setQuery] = useState('')
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
   const scrollRef = useRef<HTMLDivElement>(null)
+  const reduceMotion = useReducedMotion()
   const { scrollY } = useScroll({ container: scrollRef })
 
   useEffect(() => {
@@ -68,6 +75,32 @@ export function AddActivitySheet({
 
   const topTintOpacity = useTransform(scrollY, [4, 32], [0, 1])
 
+  const sheetMotion = reduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.2, ease: ease.out },
+      }
+    : {
+        initial: { y: '100%' },
+        animate: { y: 0 },
+        exit: { y: '100%' },
+        transition: springs.smooth,
+      }
+
+  const confirmMotion = reduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+      }
+    : {
+        initial: { scale: 0.9, opacity: 0 },
+        animate: { scale: 1, opacity: 1 },
+        exit: { scale: 0.9, opacity: 0 },
+      }
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return EXERCISE_LIBRARY.filter((e) => {
@@ -83,36 +116,39 @@ export function AddActivitySheet({
         <>
           <motion.div
             key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: ease.out }}
+            variants={{
+              hidden: {
+                opacity: 0,
+                transition: { duration: 0.2, ease: ease.out },
+              },
+              show: {
+                opacity: 1,
+                transition: { duration: 0.3, ease: ease.out },
+              },
+            }}
+            initial="hidden"
+            animate="show"
+            exit="hidden"
             onClick={onClose}
             className="absolute inset-0 z-20 bg-black/50"
           />
           <motion.div
             key="sheet"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={springs.smooth}
+            {...sheetMotion}
             className="absolute inset-x-0 bottom-0 z-30 flex h-[640px] flex-col overflow-hidden rounded-t-[32px] bg-[#1f1c18]"
           >
             <motion.div
               ref={scrollRef}
-              variants={{
-                hidden: { opacity: 0 },
-                show: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.04, delayChildren: 0.08 },
-                },
-              }}
-              initial="hidden"
-              animate="show"
               className="flex flex-1 flex-col overflow-y-auto pt-[64px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               <motion.div
                 style={{ opacity: largeTitleOpacity }}
+                initial={reduceMotion ? false : 'hidden'}
+                animate={reduceMotion ? undefined : 'show'}
+                variants={{
+                  hidden: { y: 10 },
+                  show: { y: 0, transition: springs.smooth },
+                }}
                 className="flex items-center justify-between px-5 pb-4 pt-2"
               >
                 <h2 className="font-sf text-[22px] font-bold leading-[26px] tracking-[-0.4px] text-white">
@@ -125,7 +161,18 @@ export function AddActivitySheet({
                 )}
               </motion.div>
 
-              <div className="flex flex-col gap-3 px-5 pb-[180px]">
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.05, delayChildren: 0.06 },
+                  },
+                }}
+                initial={reduceMotion ? { opacity: 0 } : 'hidden'}
+                animate={reduceMotion ? { opacity: 1 } : 'show'}
+                className="flex flex-col gap-3 px-5 pb-[180px]"
+              >
                 {filtered.map((exercise) => (
                   <ExerciseLibraryRow
                     key={exercise.id}
@@ -139,7 +186,7 @@ export function AddActivitySheet({
                     No exercises match.
                   </p>
                 )}
-              </div>
+              </motion.div>
             </motion.div>
 
             <div
@@ -207,7 +254,7 @@ export function AddActivitySheet({
             <motion.button
               type="button"
               onClick={onClose}
-              whileTap={{ scale: 0.88 }}
+              whileTap={reduceMotion ? undefined : { scale: 0.94 }}
               transition={springs.tap}
               aria-label="Close"
               className="pointer-events-auto absolute left-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.16]"
@@ -221,14 +268,17 @@ export function AddActivitySheet({
                   key="confirm"
                   type="button"
                   onClick={handleConfirm}
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.5, opacity: 0 }}
-                  whileTap={{ scale: 0.88 }}
-                  transition={springs.bouncy}
+                  {...confirmMotion}
+                  whileTap={
+                    reduceMotion
+                      ? undefined
+                      : { scale: 0.94, transition: springs.tap }
+                  }
+                  transition={springs.snappy}
                   aria-label={`Add ${selectedIds.size} exercise${
                     selectedIds.size === 1 ? '' : 's'
                   }`}
+                  style={{ transformOrigin: '100% 0%' }}
                   className="pointer-events-auto absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-white"
                 >
                   <Check size={20} strokeWidth={2.6} className="text-[#1f1c18]" />

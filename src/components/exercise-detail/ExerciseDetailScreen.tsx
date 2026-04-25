@@ -37,7 +37,7 @@ export function ExerciseDetailScreen({ exercise, onBack }: Props) {
     >
       <motion.img
         layoutId={`exercise-thumb-${exercise.id}`}
-        src={exercise.image.replace(/\/\d+\/\d+$/, '/482/874')}
+        src={exercise.image}
         alt={exercise.name}
         transition={springs.smooth}
         className="absolute inset-0 h-full w-full object-cover"
