@@ -13,10 +13,11 @@ body,
   margin: 0;
   padding: 0;
   height: 100%;
+  background: #000000;
 }
 
 body {
-  background: #1a1a1a;
+  background: #000000;
   font-family:
     -apple-system, 'SF Pro Rounded', 'SF Pro', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
