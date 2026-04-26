@@ -9,18 +9,22 @@ import { AddActivitySheet } from './AddActivitySheet'
 
 type Props = {
   selectedDays: Day[]
+  planByDay: Record<string, LibraryExercise[]>
+  onSetExercisesForDay: (day: Day, exercises: LibraryExercise[]) => void
   onBack: () => void
 }
 
-export function PlanSetupScreen({ selectedDays, onBack }: Props) {
+export function PlanSetupScreen({
+  selectedDays,
+  planByDay,
+  onSetExercisesForDay,
+  onBack,
+}: Props) {
   const [activeDay, setActiveDay] = useState<Day | null>(null)
-  const [planByDay, setPlanByDay] = useState<Record<string, LibraryExercise[]>>(
-    {},
-  )
   const [expandedDay, setExpandedDay] = useState<Day | null>(null)
 
   const setExercisesForDay = (day: Day, exercises: LibraryExercise[]) => {
-    setPlanByDay((prev) => ({ ...prev, [day]: exercises }))
+    onSetExercisesForDay(day, exercises)
     if (exercises.length > 0) {
       setExpandedDay(day)
     } else if (expandedDay === day) {
@@ -39,10 +43,10 @@ export function PlanSetupScreen({ selectedDays, onBack }: Props) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -24 }}
       transition={{ duration: 0.5, ease: ease.out }}
-      className="absolute inset-0 overflow-hidden"
+      className="absolute inset-0 overflow-hidden bg-[#161410]"
     >
-      <div className="relative z-10 flex h-full flex-col pt-[62px]">
-        <div className="flex items-center px-4">
+      <div className="relative z-10 flex h-full flex-col">
+        <div className="flex items-center">
           <motion.button
             type="button"
             onClick={onBack}
@@ -55,7 +59,7 @@ export function PlanSetupScreen({ selectedDays, onBack }: Props) {
           </motion.button>
         </div>
 
-        <div className="flex flex-1 flex-col overflow-y-auto px-4 pb-[160px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex flex-1 flex-col overflow-y-auto px-4 pb-[160px] pt-[50px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <motion.div
             variants={{
               hidden: { opacity: 0 },
@@ -66,7 +70,7 @@ export function PlanSetupScreen({ selectedDays, onBack }: Props) {
             }}
             initial="hidden"
             animate="show"
-            className="mt-auto flex flex-col gap-10"
+            className="mt-auto flex flex-col gap-8"
           >
             <motion.h1
               variants={{
@@ -79,7 +83,7 @@ export function PlanSetupScreen({ selectedDays, onBack }: Props) {
               }}
               className="font-sf text-[32px] font-bold leading-[39px] tracking-[-0.5px] text-white"
             >
-              Add to your plan
+              Plan Your Week
             </motion.h1>
 
             <motion.div

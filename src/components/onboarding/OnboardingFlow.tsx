@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Day } from '../../data/days'
+import type { LibraryExercise } from '../../data/exercises'
 import { ease } from '../../lib/motion'
 import { NextButton } from './NextButton'
 import { PlanSetupScreen } from './PlanSetupScreen'
@@ -24,8 +26,14 @@ export function OnboardingFlow({
   onNextSchedule,
   onNextPlan,
 }: Props) {
+  const [planByDay, setPlanByDay] = useState<Record<string, LibraryExercise[]>>(
+    {},
+  )
   const isPlanStep = step === 'plan'
-  const canProceed = isPlanStep || selectedDays.length > 0
+  const planHasExercises = selectedDays.some(
+    (day) => (planByDay[day]?.length ?? 0) > 0,
+  )
+  const canProceed = isPlanStep ? planHasExercises : selectedDays.length > 0
 
   return (
     <motion.div
@@ -48,6 +56,10 @@ export function OnboardingFlow({
           <PlanSetupScreen
             key="onboarding-plan"
             selectedDays={selectedDays}
+            planByDay={planByDay}
+            onSetExercisesForDay={(day, exercises) =>
+              setPlanByDay((prev) => ({ ...prev, [day]: exercises }))
+            }
             onBack={onBack}
           />
         )}
@@ -56,6 +68,7 @@ export function OnboardingFlow({
       <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-10">
         <NextButton
           enabled={canProceed}
+          label="Continue"
           onClick={isPlanStep ? onNextPlan : onNextSchedule}
         />
       </div>

@@ -12,6 +12,43 @@ type Props = {
   onToggleExpanded: () => void
 }
 
+type PlanExerciseRowProps = {
+  day: string
+  exercise: LibraryExercise
+}
+
+function PlanExerciseRow({ day, exercise }: PlanExerciseRowProps) {
+  return (
+    <motion.li
+      key={exercise.id}
+      layout
+      variants={{
+        hidden: { opacity: 0, y: 8 },
+        show: { opacity: 1, y: 0, transition: springs.smooth },
+      }}
+      className="flex w-[330px] items-center"
+    >
+      <div className="flex shrink-0 items-center gap-4">
+        {exercise.image ? (
+          <motion.img
+            layoutId={`plan-exercise-image-${day}-${exercise.id}`}
+            src={exercise.image}
+            alt=""
+            className="size-16 shrink-0 rounded-[18px] border border-[#252525] object-cover"
+          />
+        ) : (
+          <div className="size-16 shrink-0 rounded-[18px] border border-[#252525] bg-white/[0.12]" />
+        )}
+        <div className="flex shrink-0 flex-col items-start justify-center gap-1">
+          <span className="whitespace-nowrap font-sf text-[17px] font-[590] leading-[22px] tracking-[-0.43px] text-white/[0.96]">
+            {exercise.name}
+          </span>
+        </div>
+      </div>
+    </motion.li>
+  )
+}
+
 export function DayPlanCard({
   day,
   exercises,
@@ -31,13 +68,13 @@ export function DayPlanCard({
         show: { opacity: 1, y: 0, transition: springs.smooth },
       }}
       transition={springs.smooth}
-      className="flex w-full flex-col overflow-hidden rounded-[24px] bg-white/[0.16] px-5 py-6"
+      className="flex w-full flex-col items-start overflow-hidden rounded-[24px] bg-white/[0.1] px-5 py-6"
     >
       <motion.div
         layout="position"
         className="flex w-full items-center justify-between"
       >
-        <span className="font-sf text-[20px] font-semibold leading-none text-white">
+        <span className="font-sf text-[20px] font-[590] leading-[25px] tracking-[-0.45px] text-white">
           {day}
         </span>
 
@@ -47,29 +84,44 @@ export function DayPlanCard({
             onClick={onAddActivity}
             whileTap={{ scale: 0.96, opacity: 0.8 }}
             transition={springs.tap}
-            className="font-sf text-[16px] font-normal leading-[21px] tracking-[-0.31px] text-white underline decoration-solid underline-offset-[3px]"
+            className="rounded-full bg-white/[0.2] px-4 py-2 font-sf text-[17px] font-normal leading-[22px] tracking-[-0.43px] text-white"
           >
-            Add Activity
+            Add exercises
           </motion.button>
         )}
 
         {hasExercises && (
-          <motion.button
-            type="button"
-            onClick={onToggleExpanded}
-            whileTap={{ scale: 0.88 }}
-            transition={springs.tap}
-            aria-label={isOpen ? 'Collapse' : 'Expand'}
-            className="flex h-8 w-8 items-center justify-center rounded-full"
-          >
-            <motion.span
-              animate={{ rotate: isOpen ? 180 : 0 }}
-              transition={{ duration: 0.3, ease: ease.standard }}
-              className="flex"
+          <div className="flex items-center gap-4">
+            <motion.button
+              type="button"
+              onClick={onEditActivity}
+              whileTap={{ scale: 0.96, opacity: 0.8 }}
+              transition={springs.tap}
+              className="rounded-full bg-white/[0.2] px-4 py-2 font-sf text-[17px] font-normal leading-[22px] tracking-[-0.43px] text-white"
             >
-              <ChevronDown size={20} strokeWidth={2.2} className="text-white" />
-            </motion.span>
-          </motion.button>
+              Edit
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={onToggleExpanded}
+              whileTap={{ scale: 0.88 }}
+              transition={springs.tap}
+              aria-label={isOpen ? 'Collapse' : 'Expand'}
+              className="flex h-8 w-8 items-center justify-center bg-transparent"
+            >
+              <motion.span
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: ease.standard }}
+                className="flex"
+              >
+                <ChevronDown
+                  size={24}
+                  strokeWidth={2}
+                  className="text-white/80"
+                />
+              </motion.span>
+            </motion.button>
+          </div>
         )}
       </motion.div>
 
@@ -96,52 +148,13 @@ export function DayPlanCard({
               className="flex flex-col gap-4 pt-6"
             >
               {exercises.map((exercise) => (
-                <motion.li
+                <PlanExerciseRow
                   key={exercise.id}
-                  layout
-                  variants={{
-                    hidden: { opacity: 0, y: 8 },
-                    show: { opacity: 1, y: 0, transition: springs.smooth },
-                  }}
-                  className="flex items-center gap-4"
-                >
-                  {exercise.image ? (
-                    <motion.img
-                      layoutId={`plan-exercise-image-${day}-${exercise.id}`}
-                      src={exercise.image}
-                      alt=""
-                      className="h-[60px] w-[60px] shrink-0 rounded-[18px] object-cover"
-                    />
-                  ) : (
-                    <div className="h-[60px] w-[60px] shrink-0 rounded-[18px] bg-white/[0.12]" />
-                  )}
-                  <span className="font-sf text-[16px] font-semibold leading-[22px] text-white/[0.96]">
-                    {exercise.name}
-                  </span>
-                </motion.li>
+                  day={day}
+                  exercise={exercise}
+                />
               ))}
             </motion.ul>
-
-            <motion.div
-              variants={{
-                hidden: { opacity: 0 },
-                show: { opacity: 1, transition: { delay: 0.15 } },
-              }}
-              initial="hidden"
-              animate="show"
-              exit="hidden"
-              className="flex justify-center pt-6"
-            >
-              <motion.button
-                type="button"
-                onClick={onEditActivity}
-                whileTap={{ scale: 0.96, opacity: 0.8 }}
-                transition={springs.tap}
-                className="font-sf text-[16px] font-normal leading-[21px] tracking-[-0.31px] text-white underline decoration-solid underline-offset-[3px]"
-              >
-                Edit Activity
-              </motion.button>
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

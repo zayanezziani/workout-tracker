@@ -46,7 +46,7 @@ export function ScheduleSetupScreen({
               }}
               className="font-sf text-[32px] font-bold leading-[39px] tracking-[-0.5px] text-white"
             >
-              Choose your weekly schedule
+              Set Your Training Days
             </motion.h1>
 
             <motion.div
