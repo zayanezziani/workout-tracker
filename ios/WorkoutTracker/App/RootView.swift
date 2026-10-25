@@ -83,22 +83,20 @@ private struct AppCanvas: View {
         ZStack {
             Theme.Palette.phone
 
-            if screen.isOnboarding {
+            ScreenSlot(isActive: screen.isOnboarding, exitX: -24, exitCurve: Ease.in) {
                 OnboardingFlow(
                     selectedDays: $selectedDays,
                     initialStep: Screen.launchOverride == .onboardingPlan ? .plan : .days,
                     onFinish: finishOnboarding
                 )
-                .transition(.screen(enterX: 0, exitX: -24, exitCurve: Ease.in))
             }
 
-            if screen == .workoutList {
+            ScreenSlot(isActive: screen == .workoutList, enterX: -24, exitX: -24, enterDelay: listEnterDelay) {
                 WorkoutListScreen(
                     workout: Workouts.today,
                     hiddenThumbID: hero?.exercise.id,
                     onSelectExercise: openDetail
                 )
-                .transition(.screen(enterX: -24, exitX: -24, enterDelay: listEnterDelay))
             }
 
             if let hero {
@@ -110,9 +108,8 @@ private struct AppCanvas: View {
                 )
             }
 
-            if screen == .exerciseDetail {
+            ScreenSlot(isActive: screen == .exerciseDetail, enterX: 0, exitX: -24, enterDelay: 0.15) {
                 ExerciseDetailScreen(exercise: activeExercise, onBack: closeDetail)
-                    .transition(.screen(enterX: 0, exitX: -24, enterDelay: 0.15))
             }
         }
         .frame(width: size.width, height: size.height)
@@ -136,8 +133,9 @@ private struct AppCanvas: View {
 
         // One frame for the hero to render at the thumbnail before it starts to move.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
+            // The hero animates itself (see HeroImage); the screen change owns the transaction.
+            heroExpanded = true
             withAnimation(Ease.out(Duration.screen)) { screen = .exerciseDetail }
-            withAnimation(Springs.smooth) { heroExpanded = true }
         }
     }
 
@@ -170,6 +168,7 @@ private struct HeroImage: View {
             .frame(width: rect.width, height: rect.height)
             .clipShape(RoundedRectangle(cornerRadius: expanded ? 0 : Theme.Radius.thumbnail, style: .continuous))
             .position(x: rect.midX, y: rect.midY)
+            .animation(Springs.smooth, value: expanded)
             .allowsHitTesting(false)
     }
 }
