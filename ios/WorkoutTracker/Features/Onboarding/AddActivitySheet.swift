@@ -298,8 +298,10 @@ private struct ProgressiveEdgeBlur: ViewModifier {
     func body(content: Content) -> some View {
         content.visualEffect { view, proxy in
             let y = proxy.frame(in: .named(space)).midY
-            // Top zone (web: four masked blurs 28/14/6/2px over 96pt): strongest at the very top edge.
-            let top = 30 * pow(1 - min(max(y / 82, 0), 1), 1.6)
+            // Top zone (web: four masked blurs 28/14/6/2px over 96pt, which compound where they overlap):
+            // strongest at the top edge and still clearly soft through the lower half of the band.
+            // `y` is the row's centre, so a row whose top is mid-band reads as already smeared.
+            let top = 30 * pow(1 - min(max(y / 110, 0), 1), 1.3)
             // Bottom zone (web: 24px blur, solid for 68% of 156pt, then fading out).
             let fromBottom = sheetHeight - y
             let bottom = 24 * (1 - min(max((fromBottom - 106) / 50, 0), 1))
