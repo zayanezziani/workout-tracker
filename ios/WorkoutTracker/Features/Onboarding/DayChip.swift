@@ -10,9 +10,10 @@ struct DayChip: View {
     var body: some View {
         Button(action: onToggle) {
             Text(day.rawValue)
-                .sf(18, .regular)
+                // Web: 18px text with `leading-none`, 16px padding and a 1px border → a 52pt chip.
+                .sf(18, .regular, lineHeight: 18)
                 .foregroundStyle(selected ? Color.black : Color.white)
-                .padding(16)
+                .padding(17)
                 .background(
                     RoundedRectangle(cornerRadius: Theme.Radius.dayChip, style: .continuous)
                         .fill(selected ? Color.white : Color.white.opacity(0.2))

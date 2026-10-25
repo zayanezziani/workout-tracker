@@ -23,7 +23,7 @@ private struct SetPill: View {
         ZStack {
             if isDone {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 14, weight: .heavy))
+                    .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.black)
                     .transition(.scale(scale: 0.01).combined(with: .opacity).animation(Springs.bouncy))
             } else {
