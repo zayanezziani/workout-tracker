@@ -140,7 +140,8 @@ private struct AppCanvas: View {
     }
 
     private func closeDetail() {
-        listEnterDelay = 0.1
+        // No wait on the way back: the list fades in underneath the hero as it shrinks onto its card.
+        listEnterDelay = 0
         withAnimation(Ease.out(Duration.screen)) { screen = .workoutList }
         withAnimation(Springs.smooth, completionCriteria: .logicallyComplete) {
             heroExpanded = false
