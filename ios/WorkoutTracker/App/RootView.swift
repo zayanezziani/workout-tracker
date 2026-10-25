@@ -32,20 +32,33 @@ enum DesignFrame {
 
 struct RootView: View {
     var body: some View {
+        // The reader must *respect* the safe area: a reader that ignores it reports zero insets.
+        // Only the keyboard region is ignored, so a visible keyboard never leaks into the bottom inset.
         GeometryReader { proxy in
-            if DesignFrame.isEnabled {
-                let scale = min(proxy.size.width / DesignFrame.size.width, proxy.size.height / DesignFrame.size.height)
-                AppCanvas(size: DesignFrame.size, insets: DesignFrame.insets)
-                    .frame(width: DesignFrame.size.width, height: DesignFrame.size.height)
-                    .clipShape(RoundedRectangle(cornerRadius: 48, style: .continuous))
-                    .scaleEffect(scale)
-                    .frame(width: proxy.size.width, height: proxy.size.height)
-            } else {
-                AppCanvas(size: proxy.size, insets: proxy.safeAreaInsets)
+            let insets = proxy.safeAreaInsets
+            let screen = CGSize(
+                width: proxy.size.width + insets.leading + insets.trailing,
+                height: proxy.size.height + insets.top + insets.bottom
+            )
+
+            Group {
+                if DesignFrame.isEnabled {
+                    let scale = min(screen.width / DesignFrame.size.width, screen.height / DesignFrame.size.height)
+                    AppCanvas(size: DesignFrame.size, insets: DesignFrame.insets)
+                        .frame(width: DesignFrame.size.width, height: DesignFrame.size.height)
+                        .clipShape(RoundedRectangle(cornerRadius: 48, style: .continuous))
+                        .scaleEffect(scale)
+                        .frame(width: screen.width, height: screen.height)
+                } else {
+                    AppCanvas(size: screen, insets: insets)
+                }
             }
+            .frame(width: screen.width, height: screen.height)
+            // The reader's origin is the safe area's corner; shift back to the physical screen corner.
+            .offset(x: -insets.leading, y: -insets.top)
         }
-        .ignoresSafeArea()
-        .background(Theme.Palette.phone)
+        .ignoresSafeArea(.keyboard)
+        .background(Theme.Palette.phone.ignoresSafeArea())
     }
 }
 
