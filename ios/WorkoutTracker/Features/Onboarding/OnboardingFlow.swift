@@ -12,6 +12,7 @@ struct OnboardingFlow: View {
     @State private var step: Step
     @State private var planByDay: [Day: [LibraryExercise]] = [:]
     @State private var activeDay: Day?
+    @State private var sheetUp = false
     @State private var expandedDay: Day?
 
     init(selectedDays: Binding<[Day]>, initialStep: Step = .days, onFinish: @escaping () -> Void) {
@@ -66,16 +67,17 @@ struct OnboardingFlow: View {
 
     // MARK: Sheet
 
+    /// The sheet stays mounted while it animates away: `activeDay` is the content, `sheetUp` is the animation state.
     @ViewBuilder
     private var sheetLayer: some View {
         if let day = activeDay {
             Color.black.opacity(0.5)
+                .opacity(sheetUp ? 1 : 0)
+                // Web: fade in over 300 ms, out over 200 ms.
+                .animation(sheetUp ? Ease.out(0.3) : Ease.out(0.2), value: sheetUp)
                 .contentShape(Rectangle())
                 .onTapGesture(perform: dismissSheet)
-                .transition(
-                    .opacity.animation(Ease.out(0.3))
-                )
-                .zIndex(1)
+                .allowsHitTesting(sheetUp)
 
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
@@ -87,22 +89,33 @@ struct OnboardingFlow: View {
                 )
             }
             .ignoresSafeArea(.keyboard)
-            .transition(
-                reduceMotion
-                    ? .opacity.animation(Ease.out(0.2))
-                    : .move(edge: .bottom).animation(Springs.sheet)
-            )
-            .zIndex(2)
+            // Slides in and out on the same spring (web: y 100% → 0 → 100%); Reduce Motion fades instead.
+            .offset(y: reduceMotion || sheetUp ? 0 : sheetHiddenOffset)
+            .opacity(reduceMotion && !sheetUp ? 0 : 1)
+            .allowsHitTesting(sheetUp)
         }
     }
 
+    /// Far enough down to clear the 640 pt sheet plus the home indicator on any device.
+    private var sheetHiddenOffset: CGFloat { 640 + 120 }
+
     private func present(_ day: Day) {
         Haptics.impact(.soft)
-        withAnimation(Springs.sheet) { activeDay = day }
+        // Mount hidden, then animate up on the next tick.
+        activeDay = day
+        sheetUp = false
+        DispatchQueue.main.async {
+            withAnimation(reduceMotion ? Ease.out(0.2) : Springs.sheet) { sheetUp = true }
+        }
     }
 
     private func dismissSheet() {
-        withAnimation(Springs.sheet) { activeDay = nil }
+        guard sheetUp else { return }
+        withAnimation(reduceMotion ? Ease.out(0.2) : Springs.sheet, completionCriteria: .logicallyComplete) {
+            sheetUp = false
+        } completion: {
+            if !sheetUp { activeDay = nil }
+        }
     }
 
     private func confirm(_ exercises: [LibraryExercise], for day: Day) {
